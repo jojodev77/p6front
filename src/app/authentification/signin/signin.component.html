@@ -1,0 +1,26 @@
+<section id="signin">
+
+    <form [formGroup] = "signinForm">
+        <mat-form-field class="example-form-field">
+            <mat-label>Nom</mat-label>
+            <input matInput type="text" formControlName="email">
+            <button mat-button *ngIf="signinForm.get('email').value" matSuffix mat-icon-button aria-label="Clear"
+                (click)="signinForm.get('email').setValue('')">
+                <mat-icon>close</mat-icon>
+            </button>
+        </mat-form-field>
+
+        <mat-form-field class="example-form-field">
+            <mat-label>Mot de passe</mat-label>
+            <input matInput type="password" formControlName="password">
+            <button mat-button *ngIf="signinForm.get('password').value" matSuffix mat-icon-button aria-label="Clear"
+                (click)="signinForm.get('password').setValue('')">
+                <mat-icon>close</mat-icon>
+            </button>
+        </mat-form-field>
+    </form>
+    <button (click)="signin()">SE CONNECTER</button>
+    <div class="socialNetwork">
+        <img src="assets/logog.PNG" (click)="signinByGoogle()">
+    </div>
+</section>
