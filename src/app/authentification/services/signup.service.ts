@@ -1,50 +1,25 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, Subject, throwError } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { SigninRequest } from '../models/signinRequest';
-import { SigninResponse } from '../models/signinResponse';
-import {catchError} from 'rxjs/operators'; 
-import { AuthConfig } from 'angular-oauth2-oidc';
-import { OAuthService, JwksValidationHandler } from 'angular-oauth2-oidc';
-import { stringify } from '@angular/compiler/src/util';
-
+import { CreateUser } from '../models/createUser';
 
 @Injectable({
   providedIn: 'root'
 })
-export class SigninService {
+export class SignupService {
 
-  constructor(private http: HttpClient,  private oauthService: OAuthService) { }
+  constructor(private http: HttpClient) { }
 
   env = environment;
-  userSession = new Subject<any>();
 
-  authConfig: AuthConfig = {
-    issuer: 'https://accounts.google.com',
-    redirectUri: window.location.origin + '/home',
-    clientId: "1097570770416-34c3a8sc86sej5hlg40ghu15rsrjajdc.apps.googleusercontent.com",
-    scope: 'openid profile email',
-    strictDiscoveryDocumentValidation: false
-  };
-
-  signin(user: SigninRequest): Observable<any> {
+  signup(user: any): Observable<any> {
     let headers = new HttpHeaders();
     headers = headers.append('Content-Type', 'application/json');
-    return this.http.post<any>(this.env.signinWithEmail, user, { headers: headers }).pipe(
+    return this.http.post<any>(this.env.createUser, user, { headers: headers }).pipe(
       catchError(this.handleError)
   );
-}
-
-signinByGoogle() {
-//   let headers = new HttpHeaders();
-//   headers = headers.append('Content-Type', 'application/json');
-//   return this.http.post<any>(this.env.signinWithGoogle, { headers: headers }).pipe(
-//     catchError(this.handleError)
-// );
-this.oauthService.configure(this.authConfig);
-this.oauthService.tokenValidationHandler = new JwksValidationHandler();
-this.oauthService.loadDiscoveryDocumentAndTryLogin();
 }
 
   handleError(error) {
@@ -89,20 +64,4 @@ this.oauthService.loadDiscoveryDocumentAndTryLogin();
   
     return throwError(errorMessage);
   }
-
-  saveUserInSession(user: any) {
-    console.log(user)
-    this.userSession.next(user);
-    sessionStorage.setItem("user", JSON.stringify(user));
-  }
-
-getToken() {
-  let token: string;
-  let us: any = sessionStorage.getItem(("user"));
-console.log(JSON.parse(us).token)
-token = JSON.parse(us).token;
-return token;
 }
-}
-
-

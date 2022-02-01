@@ -19,8 +19,9 @@
             </button>
         </mat-form-field>
     </form>
-    <button (click)="signin()">SE CONNECTER</button>
+    <button (click)="signin()">Login</button>
     <div class="socialNetwork">
-        <img src="assets/logog.PNG" (click)="signinByGoogle()">
+        <!-- <img src="assets/logog.PNG" (click)="signinByGoogle()"> -->
+        <button type="button" (click)="loginWithGoogle()" class="btn btn-success">SignIn Google</button>
     </div>
 </section>

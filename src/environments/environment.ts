@@ -5,9 +5,9 @@
 export const environment = {
   production: false,
   signinWithEmail: "http://localhost:8083/signin",
-  signinWithGoogle: "http://localhost:8083/signinByGoogle",
-  createUser: "http://localhost:8083/",
-  createUserPersonnalInformations: "http://localhost:8083/",
+  signinWithGoogle: "http://localhost:4200/loginGoogle",
+  createUser: "http://localhost:8083/signup",
+  getUserInformations: "http://localhost:8083/getInformations",
   createUserPersonnalAccount: "http://localhost:8083/",
 };
 

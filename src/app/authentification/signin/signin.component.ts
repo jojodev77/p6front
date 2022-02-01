@@ -5,7 +5,21 @@ import { SigninRequest } from '../models/signinRequest';
 import { SigninResponse } from '../models/signinResponse';
 import { SigninFormService } from '../services/signin-form.service';
 import { SigninService } from '../services/signin.service';
-
+import { OAuthService } from 'angular-oauth2-oidc';
+import { AuthConfig } from 'angular-oauth2-oidc';
+import { JwksValidationHandler } from 'angular-oauth2-oidc-jwks';
+import { SocialAuthService, GoogleLoginProvider, SocialUser } from 'angularx-social-login';
+export const authCodeFlowConfig: AuthConfig = {
+  issuer: 'https://accounts.google.com',
+  redirectUri: window.location.origin + '/home',
+  clientId: "1097570770416-34c3a8sc86sej5hlg40ghu15rsrjajdc.apps.googleusercontent.com",
+  responseType: 'id_token token',
+  scope: 'openid email profile',
+  showDebugInformation: true,
+  requireHttps: false,
+  disablePKCE: true,
+  strictDiscoveryDocumentValidation: false
+};
 @Component({
   selector: 'app-signin',
   templateUrl: './signin.component.html',
@@ -13,12 +27,15 @@ import { SigninService } from '../services/signin.service';
 })
 export class SigninComponent implements OnInit {
 
-  constructor(private signinFormService: SigninFormService, private signinService: SigninService, private router: Router) { }
- signinForm: FormGroup;
- user: SigninRequest;
- userResponse: any;
- signinResponse: SigninResponse;
- sr: SigninResponse;
+
+  constructor(private signinFormService: SigninFormService, private signinService: SigninService, private router: Router,
+    private oauthService: OAuthService,  private socialAuthService: SocialAuthService) { }
+  signinForm: FormGroup;
+  user: SigninRequest;
+  userResponse: any;
+  signinResponse: SigninResponse;
+  sr: SigninResponse;
+
   ngOnInit(): void {
     this.signinForm = this.signinFormService.buildForm();
     this.signinForm.get('email').setValue('j.d@g.com');
@@ -26,54 +43,46 @@ export class SigninComponent implements OnInit {
   }
 
   signin() {
-    let  resp: any = {
+    let resp: any = {
       token: '',
       email: ''
     }
-  this.user = {
+    this.user = {
       email: this.signinForm.get('email').value,
       password: this.signinForm.get('password').value
     } as any;
-    console.log(this.user);
+    this.signinService.saveUserInSession(this.user);
     this.signinService.signin(this.user).subscribe(
       (data: any) => {
-         resp.token = data.token,
-          resp.email = data.email
-       }
+        resp.token = data.token,
+        resp.email = data.email,
+        console.log(resp)
+  
+      }
     );
-   
-  //  window.location.href ="";
 
-  if (resp) {
-    this.buildUser(resp);
-  }
- 
+
   }
 
-  signinByGoogle() {
-    let  resp: any = {
-      token: '',
-      email: ''
-    }
-      this.signinService.signinByGoogle().subscribe(
-        (data: any) => {
-          resp.token = data.token,
-           resp.email = data.email
-        }
-     );
-    
-     window.location.href ="http://localhost:8083/signinByGoogle";
- 
-   if (resp) {
-     this.buildUser(resp);
-   }
-    }
+  loginWithGoogle(): void {
+    this.socialAuthService.signIn(GoogleLoginProvider.PROVIDER_ID) .then(response => {
+     let user = {
+        email: response.email,
+        token: response.authToken
+      } as any;
 
-    buildUser(user : any) {
-      sessionStorage.setItem("user", JSON.stringify(user));
-      const us = JSON.parse(sessionStorage.getItem("user")); 
+      this.signinService.userSession.next(user);
+      this.signinService.saveUserInSession(user);
+      if (user.token !== null) {
         this.router.navigate(['/home'])
-      
-    }
+      }
+      console.log(this.user)
+
+      console.log(response);
+  });
+  }
+
+
+  
 
 }

@@ -21,6 +21,9 @@
     "@angular/platform-browser": "~13.1.3",
     "@angular/platform-browser-dynamic": "~13.1.3",
     "@angular/router": "~13.1.3",
+    "angular-oauth2-oidc": "^13.0.1",
+    "angular-oauth2-oidc-jwks": "^13.0.1",
+    "angularx-social-login": "^4.0.1",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.11.4"

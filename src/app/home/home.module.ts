@@ -5,6 +5,8 @@ import { HistoryComponent } from './history/history.component';
 import { CashTransfertComponent } from './cash-transfert/cash-transfert.component';
 import { AccountSituationComponent } from './account-situation/account-situation.component';
 import { HomeRoutingModule } from './home.routing.module';
+import { SharedModule } from '../shared/shared.module';
+import { HomeServiceService } from './services/home-service.service';
 
 
 
@@ -12,8 +14,10 @@ import { HomeRoutingModule } from './home.routing.module';
   declarations: [HomeComponent, HistoryComponent, CashTransfertComponent, AccountSituationComponent],
   imports: [
     CommonModule,
-    HomeRoutingModule
+    HomeRoutingModule,
+    SharedModule
   ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
+  providers: [HomeServiceService]
 })
 export class HomeModule { }

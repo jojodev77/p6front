@@ -7,17 +7,19 @@ import { AuhentificationRoutingModule } from './authentification.routing.module'
 import { SharedModule } from '../shared/shared.module';
 import { SigninService } from './services/signin.service';
 import { ReactiveFormsModule } from '@angular/forms';
+import { RegisterComponent } from './register/register.component';
 
 
 @NgModule({
-  declarations: [SigninComponent, SignupComponent],
+  declarations: [SigninComponent, SignupComponent, RegisterComponent],
   imports: [
     CommonModule,
     AuhentificationRoutingModule,
     SharedModule,
     ReactiveFormsModule,
   ],
-  providers: [SigninService],
+  providers: [SigninService, 
+  ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
 })
 export class AuthentificationModule { }
