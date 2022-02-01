@@ -3,12 +3,7 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false,
-  signinWithEmail: "http://localhost:8083/signin",
-  signinWithGoogle: "http://localhost:4200/loginGoogle",
-  createUser: "http://localhost:8083/signup",
-  getUserInformations: "http://localhost:8083/getInformations",
-  createUserPersonnalAccount: "http://localhost:8083/",
+  production: false
 };
 
 /*
@@ -18,4 +13,4 @@ export const environment = {
  * This import should be commented out in production mode because it will have a negative impact
  * on performance if an error is thrown.
  */
-// import 'zone.js/plugins/zone-error';  // Included with Angular CLI.
+// import 'zone.js/dist/zone-error';  // Included with Angular CLI.
