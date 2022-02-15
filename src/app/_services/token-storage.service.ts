@@ -16,7 +16,10 @@ export class TokenStorageService {
 
   public saveToken(token: string): void {
     window.sessionStorage.removeItem(TOKEN_KEY);
-    window.sessionStorage.setItem(TOKEN_KEY, token);
+    if (token != null) {
+      window.sessionStorage.setItem(TOKEN_KEY, token);
+    }
+  
   }
 
   public getToken(): string {
@@ -25,10 +28,16 @@ export class TokenStorageService {
 
   public saveUser(user): void {
     window.sessionStorage.removeItem(USER_KEY);
-    window.sessionStorage.setItem(USER_KEY, JSON.stringify(user));
+    if (user) {
+      window.sessionStorage.setItem(USER_KEY, JSON.stringify(user));
+    }
+  
   }
 
   public getUser(): any {
-    return JSON.parse(sessionStorage.getItem(USER_KEY));
+    if (sessionStorage.getItem(USER_KEY)) {
+      return JSON.parse(sessionStorage.getItem(USER_KEY));
+    }
+   
   }
 }

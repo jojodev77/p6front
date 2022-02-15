@@ -4,7 +4,13 @@ import { Observable } from 'rxjs';
 import { AppConstants } from '../common/app.constants';
 
 const httpOptions = {
-  headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+  headers: new HttpHeaders(
+    {  'Access-Control-Allow-Origin': '**',
+    'Access-Control-Allow-Headers': '**',
+    'Access-Control-Allow-Methods': 'POST, GET, OPTION, DELETE, PUT',
+    'Content-Type': 'application/json' }
+    
+    )
 };
 
 @Injectable({

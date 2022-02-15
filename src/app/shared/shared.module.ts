@@ -19,7 +19,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatBadgeModule} from '@angular/material/badge';
-
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
 
 
 import { MatSortModule } from '@angular/material/sort';
@@ -52,7 +52,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     MatBadgeModule,
     MatPaginatorModule,
     MatSortModule,
-    FormsModule
+    FormsModule,
+    MatAutocompleteModule
     
   ],
   exports: [
@@ -77,7 +78,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     ReactiveFormsModule,
     MatPaginatorModule,
     MatSortModule,
-    FormsModule
+    FormsModule,
+    MatAutocompleteModule
   ]
 })
 export class SharedModule { }
