@@ -1,5 +1,5 @@
 #account{display: flex; flex-direction: column; align-items: center;}
-#account .infos{display: flex;     flex-direction: column-reverse; align-content: flex-end; flex-wrap: wrap; justify-content: flex-end; align-items: stretch;}
+#account .infos{display: flex;     flex-direction: row; align-content: flex-end; flex-wrap: wrap; justify-content: flex-end; align-items: stretch;}
 #account > div.transaction{display: flex; flex-direction: column;}
 #account > div.transaction > div{    display: flex; flex-direction: column; flex-wrap: wrap; align-content: center;}
 
@@ -8,3 +8,25 @@ input{border: 1px solid black; cursor: pointer;}
 .matOptions{color: black; font-weight: 900;}
 table {width: 100%;}
 .pay{display: flex; flex-direction: row;}
+p, input{margin: 10px;}
+.response{padding: 10px; font-weight: bold; text-decoration: underline;}
+.btn-primary {
+    color: #fff;
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    margin: 43px;
+}
+#buddy{    display: flex;
+    flex-direction: column;
+    align-content: space-around;
+    justify-content: center;
+    align-items: center;}
+
+    #mat-input-1{    max-width: 200px;}
+    #account {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }

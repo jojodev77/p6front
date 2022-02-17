@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AppConstants } from '../common/app.constants';
-import { AddBuddy } from '../home/home.component';
+import { AddBuddy, AddCash } from '../home/home.component';
 
 const httpOptions = {
 		  headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -36,9 +36,9 @@ export class UserService {
     return this.http.get(AppConstants.API_URL + 'user/me', { responseType: 'text' });
   }
 
-  getCurrentInfos(): Observable<any> {
-    return this.http.get(AppConstants.API_URL + 'user/infos', { responseType: 'text' });
-  }
+  // getCurrentInfos(): Observable<any> {
+  //   return this.http.get(AppConstants.API_URL + 'user/infos', { responseType: 'text' });
+  // }
 
   getListUserReferenceTransaction(): Observable<any> {
     return this.http.get(AppConstants.LIST_REFERENCE_TRANSACTION, httpOptions);
@@ -48,7 +48,8 @@ export class UserService {
     
     let buddy: AddBuddy = {
       userGetter: userGetter,
-      userSetter: userSetter
+      userSetter: userSetter,
+      amount: null
     }
     return this.http.post(AppConstants.ADD_BUDDY,buddy, httpOptions);
   }
@@ -57,13 +58,25 @@ export class UserService {
     return this.http.post(AppConstants.GET_LIST_BUDDY,id, httpOptions);
   }
 
-  startTransaction(buddys: AddBuddy, amount: number) {
+  startTransaction(buddys: AddBuddy) {
     let buddy: any = {
       userGetter: buddys.userGetter,
       userSetter: buddys.userSetter,
-      amount: amount
+      amount: buddys.amount
     }
     return this.http.post(AppConstants.START_TRANSACTION,buddy, httpOptions);
   }
 
+  addCash(cash: AddCash) {
+  return this.http.post(AppConstants.ADD_CASH, cash, httpOptions);
+}
+
+getListHistory(buddy: AddBuddy) {
+  return this.http.post(AppConstants.GET_LIST_HISTORY, buddy, httpOptions);
+}
+
+
+getAccountSituation(buddy: AddBuddy) {
+  return this.http.post(AppConstants.GET_ACCOUNT_SITUATION, buddy, httpOptions);
+}
 }

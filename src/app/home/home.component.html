@@ -1,63 +1,63 @@
 <div>
   <div class="addCash">
     <p>Add money with your phone number</p>
-    <button>add cash</button>
+    <form [formGroup]="soldAccountForm">
+
+      <label for="phoneNumber">you Phone number </label>
+      <input id="phoneNumber" type="number" formControlName="phoneNumber">
+
+      <label for="amountCash">you want to add </label>
+      <input id="amountCash" type="number" formControlName="amountCash">
+
+    </form>
+    <button (click)="addCash()">add cash</button>
   </div>
   <mat-tab-group mat-align-tabs="center">
-    <mat-tab label=" Account">
+    <mat-tab label=" My-Account">
       <section id="account">
         <h2>Hello {{user.displayName}}</h2>
         <div class="infos">
-          <p>your balance is: {{user?.userAccountInformations?.soldAccount}}€</p>
-          <p>your reference number: {{user?.userAccountInformations?.accountReferenceTransaction}}</p>
+          <p>your balance is: </p>
+          <div class="response">{{accountSituation?.soldAccount}}€</div>
+          <p>your reference number: </p>
+          <div class="response">{{user?.userAccountInformations?.accountReferenceTransaction}}</div>
         </div>
-        <div class="transaction">
-          <div *ngIf="listUserReferenceAccount !== null">
-            <p>Select a buddy</p>
-            <mat-form-field appearance="fill">
-              <mat-label>Your buddy</mat-label>
-              <mat-select [formControl]="buddyControl" required>
-                <mat-option>--</mat-option>
-                <mat-option *ngFor="let u of listUserReferenceAccount" [value]="u.accountReferenceTransaction">
-                  {{u.displayName}} /  {{u.accountReferenceTransaction}}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-            <p>select an account</p>
-            <mat-form-field class="example-form-field" appearance="fill" >
-              <input matInput type="number" [formControl]="amountControl">
-              <button *ngIf="value" matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
-                <mat-icon>close</mat-icon>
-              </button>
-            </mat-form-field>
-            <button (click)="actionTransaction()" class="btn btn-primary btn-block">Pay</button>
-          </div>
 
-        </div>
+        <form [formGroup]="transactionForm">
+          <h3>Make a transaction</h3>
+          <div class="transaction">
+            <div *ngIf="dataSource !== null">
+              <ng-container>
+                <p>Select a buddy</p>
+                <mat-form-field appearance="fill">
+                  <mat-label>Your buddy</mat-label>
+                  <mat-select required formControlName="buddy">
+                    <mat-option *ngFor="let u of dataSource" [value]="u.userRefTransaction">
+                      {{u.displayName}} / {{u.userRefTransaction}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+
+
+                <p>select an account</p>
+                <mat-form-field class="example-form-field" appearance="fill">
+                  <input matInput type="number" formControlName="amount">
+                </mat-form-field>
+                <button (click)="actionTransaction()" class="btn btn-primary btn-block">Pay</button>
+              </ng-container>
+            </div>
+            <div *ngIf="dataSource === null">You are no buddy !</div>
+          </div>
+        </form>
       </section>
 
 
     </mat-tab>
-    <mat-tab label=" Buddy">
+    <mat-tab label=" My-Buddy">
+
       <section id="buddy">
         <h2>Your buddy save</h2>
-        <br />
-
-        <h3>Add a buddy:</h3>
-        <input type="text" matInput [formControl]="myControl" [matAutocomplete]="auto" placeholder="add a buddy">
-        <mat-autocomplete class="autoc" #auto="matAutocomplete" [displayWith]="displayFn">
-          <mat-option class="matOptions" *ngFor="let option of listUserReferenceAccount" [value]="option"
-            (click)="getValue()">
-            {{option.displayName}} : {{option.accountReferenceTransaction}}
-          </mat-option>
-        </mat-autocomplete>
-        <h4>Confirm you add Buddy?:</h4>
-        <p>{{valueListUserReferenceAccount?.displayName}}</p>
-        <button (click)="addBuddy(valueListUserReferenceAccount)" class="btn btn-primary btn-sm">Confirm</button>
-        <br /><br />
-
-
-
         <mat-form-field appearance="standard">
           <mat-label>Filter</mat-label>
           <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
@@ -82,7 +82,7 @@
             <th mat-header-cell *matHeaderCellDef> Amount transaction </th>
             <td mat-cell *matCellDef="let element">
               <div>
-              
+
               </div>
             </td>
           </ng-container>
@@ -96,13 +96,31 @@
             <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
           </tr>
         </table>
+        <br />
+
+        <h3>Add a buddy:</h3>
+        <input type="text" matInput [formControl]="myControl" [matAutocomplete]="auto" placeholder="add a buddy">
+        <mat-autocomplete class="autoc" #auto="matAutocomplete" [displayWith]="displayFn">
+          <mat-option class="matOptions" *ngFor="let option of listUserReferenceAccount" [value]="option"
+            (click)="getValue()">
+            {{option.displayName}} : {{option.accountReferenceTransaction}}
+          </mat-option>
+        </mat-autocomplete>
+        <h4>Confirm you add Buddy?:</h4>
+        <p>{{valueListUserReferenceAccount?.displayName}}</p>
+        <button (click)="addBuddy(valueListUserReferenceAccount)" class="btn btn-primary btn-sm">Confirm</button>
+        <br /><br />
+
+
+
+       
       </section>
     </mat-tab>
 
 
 
 
-    <mat-tab label="History">
+    <mat-tab (click)="getListHistory()" label="My-History">
       <h3>Your history of account</h3>
       <table mat-table [dataSource]="dataSourceHistory" class="mat-elevation-z8">
 
