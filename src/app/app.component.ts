@@ -1,5 +1,13 @@
 import { Component, OnInit } from '@angular/core';
+import { User } from './home/home.component';
 import { TokenStorageService } from './_services/token-storage.service';
+
+export interface Us {
+  id: number;
+  displayName:string;
+  email: string;
+  role: string[];
+}
 
 @Component({
   selector: 'app-root',
@@ -7,26 +15,25 @@ import { TokenStorageService } from './_services/token-storage.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  private roles: string;
+  private roles: any;
   isLoggedIn = false;
   showAdminBoard = false;
   showModeratorBoard = false;
   username: string;
-
+  user: User;
   constructor(private tokenStorageService: TokenStorageService) { }
 
   ngOnInit(): void {
     this.isLoggedIn = !!this.tokenStorageService.getToken();
-
+    this.user =  this.tokenStorageService.getUser();
     if (this.isLoggedIn) {
-      const user = this.tokenStorageService.getUser();
-      console.log(user?.role[0])
-      this.roles = user?.role[0];
-
-      this.showAdminBoard = this.roles.includes('ROLE_ADMIN');
-      this.showModeratorBoard = this.roles.includes('ROLE_MODERATOR');
-
-      this.username = user.displayName;
+        if (this.user?.displayName) {
+          this.user =  this.tokenStorageService.getUser();
+        } else {
+          this.user =  JSON.parse(this.tokenStorageService.getUser());
+        }
+        this.roles = this.user?.role;
+        this.username = this.user.displayName;
     }
   }
 

@@ -4,6 +4,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
+import { Us } from '../app.component';
 import { TokenStorageService } from '../_services/token-storage.service';
 import { UserService } from '../_services/user.service';
 
@@ -31,6 +32,20 @@ export interface AddCash {
   amount: number;
 }
 
+export interface User {
+  displayName: string,
+  email: string,
+  id: number,
+  jwt: string,
+  role: [],
+  userAccountInformations: UserAccountInformations;
+}
+
+export interface UserAccountInformations {
+  accountReferenceTransaction: string,
+  soldAccount: number
+}
+
 
 
 @Component({
@@ -54,33 +69,32 @@ export class HomeComponent implements OnInit, OnDestroy {
   options: string[];
   filteredOptions: Observable<any[]>;
   currentUser: any;
-  user: any;
+  user: User;
   listUserReferenceAccount: ListUserRferenceTransaction[];
+  lu: ListUserRferenceTransaction[];
   valueListUserReferenceAccount: ListUserRferenceTransaction;
   form: any = {};
   value = 'Clear me';
   soldAccountForm = new FormGroup({
     amountCash: new FormControl(''),
     phoneNumber: new FormControl(''),
-   
+
   });
   transactionForm = new FormGroup({
-    amount : new FormControl(''),
-    buddy : new FormControl('')
+    amount: new FormControl(''),
+    buddy: new FormControl('')
   });
   interval: any;
   listHistory: any;
   accountSituation: any;
+  accountRef: string;
 
   ngOnInit(): void {
     this.refreshData();
-  //   this.interval = setInterval(() => { 
-  //     this.getListHistory(); 
-  // }, 15000);
 
-  setTimeout(() => {
-    this.getListHistory(); 
-  }, 1000);
+    setTimeout(() => {
+      this.getListHistory();
+    }, 1000);
   }
 
   ngOnDestroy() {
@@ -118,7 +132,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     let buddy: AddBuddy = {
       userGetter: this.transactionForm.get('buddy').value,
       userSetter: this.user.userAccountInformations?.accountReferenceTransaction,
-      amount:  this.transactionForm.get('amount').value
+      amount: this.transactionForm.get('amount').value
     };
     // buddy.userGetter = this.buddyControl.value;
     // buddy.userSetter = this.user.userAccountInformations?.accountReferenceTransaction;
@@ -127,61 +141,75 @@ export class HomeComponent implements OnInit, OnDestroy {
       (data: any) => { console.log(data) }
     );
     this.userService.getAccountSituation(buddy).subscribe(
-      (data: any) => {this.accountSituation = data}
+      (data: any) => { this.accountSituation = data }
     );
   }
 
   private refreshData() {
-    this.refreshPage();
     this.token.getUser()
     this.userService.getPublicContent().subscribe(
       data => {
         this.content = data;
-        console.log(data)
       },
       err => {
         this.content = JSON.parse(err.error).message;
       }
     );
-
-
-    this.userService.getListUserReferenceTransaction().subscribe(
-      (data: any) => { this.listUserReferenceAccount = data, console.log(this.listUserReferenceAccount) }
-    ).unsubscribe
-    // this.userService.getCurrentInfos().subscribe(
-    //   (data: any) => { this.user = data, console.log(data) }
-    // );
-
-    this.user = this.currentUser = this.token.getUser();
-    this.valueListUserReferenceAccount = this.myControl.value;
+    this.user =  this.token.getUser();
+    if (this.token.getUser()) {
+      if (this.user?.displayName) {
+        this.user =  this.token.getUser();
+        console.log(this.user)
+      } else {
+        this.user =  JSON.parse(this.token.getUser());
+        console.log(this.user)
+      }
+    
+      }
+      
     console.log(this.user)
+        
+        
+      
+ 
+    this.valueListUserReferenceAccount = this.myControl.value;
+    this.userService.getListUserReferenceTransaction().subscribe(
+      (data: any[]) => {
+        this.listUserReferenceAccount = data,
+          data.filter(data => data.displayName === this.user.displayName)
+      }
+    );
+
+
+
 
     this.userService.getListBuddy(this.user.id).subscribe(
       (data: any) => {
-        this.dataSource = data, console.log(this.dataSource)
+        this.dataSource = data
 
       }
     );
+
     let bud: AddBuddy = {
       userGetter: null,
-      userSetter: this.user.userAccountInformations.accountReferenceTransaction,
+      userSetter: this.user?.userAccountInformations?.accountReferenceTransaction,
       amount: null
     }
+
     this.userService.getAccountSituation(bud).subscribe(
-      (data: any) => {this.accountSituation = data}
+      (data: any) => { this.accountSituation = data }
     );
- 
   }
 
   getListHistory() {
     let bud: AddBuddy = {
       userGetter: null,
-      userSetter: this.user.userAccountInformations.accountReferenceTransaction,
+      userSetter: this.user?.userAccountInformations?.accountReferenceTransaction,
       amount: null
     }
-  this.userService.getListHistory(bud).subscribe(
-    (data: any) => {this.dataSourceHistory = data, console.log(data)}
-  );
+    this.userService.getListHistory(bud).subscribe(
+      (data: any) => { this.dataSourceHistory = data }
+    );
   }
 
   refreshPage() {
@@ -192,16 +220,16 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   addCash() {
     let cash: AddCash = {
-    amount:  this.soldAccountForm.get('amountCash').value,
-    phoneNumber: this.soldAccountForm.get('phoneNumber').value,
-    userGetter: this.user.userAccountInformations?.accountReferenceTransaction
+      amount: this.soldAccountForm.get('amountCash').value,
+      phoneNumber: this.soldAccountForm.get('phoneNumber').value,
+      userGetter: this.user.userAccountInformations?.accountReferenceTransaction
     }
     this.userService.addCash(cash).subscribe(
-      (data: any) => {console.log(data)}
+      (data: any) => { console.log(data) }
     );
-    // this.userService.getAccountSituation(buddy).subscribe(
-    //   (data: any) => {this.accountSituation = data}
-    // );
+    this.userService.getAccountSituation(this.buddy).subscribe(
+      (data: any) => {this.accountSituation = data}
+    );
   }
 
 

@@ -15,7 +15,7 @@
   <mat-tab-group mat-align-tabs="center">
     <mat-tab label=" My-Account">
       <section id="account">
-        <h2>Hello {{user.displayName}}</h2>
+        <h2>Hello {{user?.displayName}}</h2>
         <div class="infos">
           <p>your balance is: </p>
           <div class="response">{{accountSituation?.soldAccount}}€</div>

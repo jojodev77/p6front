@@ -22,7 +22,6 @@ export class RegisterComponent implements OnInit {
     this.form.displayName = this.form.firstName + this.form.lastName;
     this.authService.register(this.form).subscribe(
       data => {
-        console.log(data);
         this.isSuccessful = true;
         this.isSignUpFailed = false;
       },

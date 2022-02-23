@@ -4,6 +4,8 @@ import { UserService } from '../_services/user.service';
 import { TokenStorageService } from '../_services/token-storage.service';
 import { ActivatedRoute } from '@angular/router';
 import { AppConstants } from '../common/app.constants';
+import { Us } from '../app.component';
+import { User } from '../home/home.component';
 
 
 @Component({
@@ -23,47 +25,52 @@ export class LoginComponent implements OnInit {
   githubURL = AppConstants.GITHUB_AUTH_URL;
   linkedinURL = AppConstants.LINKEDIN_AUTH_URL;
   displayName: string;
-  user: any;
+  user: User;
 
-  constructor(private authService: AuthService, private tokenStorage: TokenStorageService, private route: ActivatedRoute, private userService: UserService) {}
+  constructor(private authService: AuthService, private tokenStorage: TokenStorageService, private route: ActivatedRoute, private userService: UserService) { }
 
   ngOnInit(): void {
-    
-	const token: string = this.route.snapshot.queryParamMap.get('token');
-	const error: string = this.route.snapshot.queryParamMap.get('error');
-  console.log(token)
-  	if (this.tokenStorage.getToken()) {
-      console.log(this.tokenStorage.getToken())
+
+    const token: string = this.route.snapshot.queryParamMap.get('token');
+    const error: string = this.route.snapshot.queryParamMap.get('error');
+    console.log(token)
+    if (this.tokenStorage.getToken()) {
       this.isLoggedIn = true;
-      this.currentUser = this.tokenStorage.getUser();
+      if (this.tokenStorage.getUser()) {
+        if (this.user) {
+          this.user =  this.tokenStorage.getUser();
+        } else {
+          this.user =  JSON.parse(this.tokenStorage.getUser());
+        }
+      }
+      
+        
     }
-  	else if(token){
-  		this.tokenStorage.saveToken(token);
-  		this.userService.getCurrentUser().subscribe(
-  		      data => {
-  		        this.login(data);
-  		      },
-  		      err => {
-  		        this.errorMessage = err.error.message;
-  		        this.isLoginFailed = true;
-  		      }
-  		  );
-  	}
-  	else if(error){
-  		this.errorMessage = error;
-	    this.isLoginFailed = true;
-  	}
+    else if (token) {
+      this.tokenStorage.saveToken(token);
+      this.userService.getCurrentUser().subscribe(
+        (data: User) => {
+          this.login(data)
+        },
+        err => {
+          this.errorMessage = err.error.message;
+          this.isLoginFailed = true;
+        }
+      );
+    }
+    else if (error) {
+      this.errorMessage = error;
+      this.isLoginFailed = true;
+    }
   }
 
   onSubmit(): void {
     this.authService.login(this.form).subscribe(
       data => {
-        console.log(data)
-        this.tokenStorage.saveToken(data.jwt);
-        this.displayName = data.displayName;
-        this.user = data;
-        console.log(this.user)
-        this.login(this.user);
+        this.login(data),
+          this.tokenStorage.saveToken(data.jwt),
+          this.displayName = data.displayName,
+          this.user = data
       },
       err => {
         this.errorMessage = err.error.message;
@@ -73,10 +80,20 @@ export class LoginComponent implements OnInit {
   }
 
   login(user): void {
-	this.tokenStorage.saveUser(user);
-	this.isLoginFailed = false;
-	this.isLoggedIn = true;
-	this.currentUser = this.tokenStorage.getUser();
+    this.tokenStorage.saveUser(user);
+    this.isLoginFailed = false;
+    this.isLoggedIn = true;
+    if (this.tokenStorage.getUser()) {
+      console.log(this.tokenStorage.getUser())
+      if (this.user?.userAccountInformations?.accountReferenceTransaction !== null) {
+        this.user =  this.tokenStorage.getUser();
+        console.log(this.user)
+      } else {
+        this.user =  JSON.parse(this.tokenStorage.getUser());
+        console.log(this.user)
+      }
+    }
+   
     window.location.reload();
   }
   getParamsObjectFromHash() {
@@ -86,7 +103,7 @@ export class LoginComponent implements OnInit {
       toBeReturned = hash[1].split('&').reduce((acc, x) => {
         const hello = x.split('=');
         if (hello.length === 2) acc[hello[0]] = hello[1];
-          return acc;
+        return acc;
       }, {});
     }
     return Object.keys(toBeReturned).length ? toBeReturned : null;

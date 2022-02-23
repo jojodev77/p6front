@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { AppConstants } from '../common/app.constants';
+import { catchError, map } from 'rxjs/operators';
 
 const httpOptions = {
   headers: new HttpHeaders(
@@ -23,7 +24,10 @@ export class AuthService {
     return this.http.post(AppConstants.AUTH_API + 'signin', {
       email: credentials.username,
       password: credentials.password
-    }, httpOptions);
+    }, httpOptions).pipe(
+      map(res => <any[]>res),
+      catchError(this.handleError)
+    );
   }
 
   register(user): Observable<any> {
@@ -33,6 +37,41 @@ export class AuthService {
       password: user.password,
       matchingPassword: user.matchingPassword,
       socialProvider: 'LOCAL'
-    }, httpOptions);
+    }, httpOptions).pipe(
+      map(res => <any[]>res),
+      catchError(this.handleError)
+    );
   }
+
+  handleError(error) {
+    let errorMessage = '';
+    if (error.error instanceof ErrorEvent) {
+        // client-side error
+        errorMessage = `Error: ${error.error.message}`;
+        return throwError( alert(errorMessage))
+    } else {
+       switch (error.status) {
+         case 401:
+          errorMessage = `Erreur: ${error.status}\nMessage: incorrect authentication`;
+          return throwError( alert(errorMessage))
+           break;
+             case 500:
+            errorMessage = `Erreur: ${error.status}\nMessage: system error.`;
+            return throwError( alert(errorMessage))
+             break;
+             case 400:
+            errorMessage = `Erreur: ${error.status}\nMessage: request to server failed`;
+            return throwError(  alert(errorMessage))
+             break;
+             case 200:
+              errorMessage = `successful operation`;
+              return throwError(  alert(errorMessage))
+               break;
+       
+         default:
+           break;
+       }
+  
+      }
+    }
 }

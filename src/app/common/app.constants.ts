@@ -9,6 +9,7 @@ export class AppConstants {
     public static GET_LIST_HISTORY = AppConstants.API_BASE_URL + "api/user/history";
     public static GET_ACCOUNT_SITUATION = AppConstants.API_BASE_URL + "api/user/accountSituation";
     public static GET_LIST_BUDDY = AppConstants.API_BASE_URL + "api/user/getListBuddy";
+    public static GET_USER_INFORMATIONS = AppConstants.API_BASE_URL + "api/user/getUserInformations";
     public static START_TRANSACTION = AppConstants.API_BASE_URL + "api/user/startTransaction";
     public static LIST_USER = AppConstants.API_BASE_URL + "api/listUser";
     public static USER_BY_EMAIL = AppConstants.API_BASE_URL + "api/auth/listUser/email";
