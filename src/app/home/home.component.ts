@@ -1,10 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { Us } from '../app.component';
+import { PopupComponent } from '../popup/popup.component';
 import { TokenStorageService } from '../_services/token-storage.service';
 import { UserService } from '../_services/user.service';
 
@@ -59,7 +61,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   buddy: any;
 
   constructor(private userService: UserService, private token: TokenStorageService,
-    private router: Router) { }
+    private router: Router, public dialog: MatDialog) { }
 
   displayedColumns: string[] = ['displayName', 'accountReferenceTransaction', 'transaction'];
   displayedColumnsHistory: string[] = ['displayName', 'date', 'soldAccount'];
@@ -138,7 +140,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     // buddy.userSetter = this.user.userAccountInformations?.accountReferenceTransaction;
     let amount = this.transactionForm.get('amount').value;
     this.userService.startTransaction(buddy).subscribe(
-      (data: any) => { console.log(data) }
+      data => { console.log(data),this.openDialog("transaction completed successfully") },
+      err => {this.openDialog(err)}
     );
     this.userService.getAccountSituation(buddy).subscribe(
       (data: any) => { this.accountSituation = data }
@@ -225,12 +228,18 @@ export class HomeComponent implements OnInit, OnDestroy {
       userGetter: this.user.userAccountInformations?.accountReferenceTransaction
     }
     this.userService.addCash(cash).subscribe(
-      (data: any) => { console.log(data) }
+      (data: any) => { console.log(data), this.openDialog("money add successfully") },
+      err => {this.openDialog(err)}
     );
     this.userService.getAccountSituation(this.buddy).subscribe(
-      (data: any) => {this.accountSituation = data}
+      data => {this.accountSituation = data},
+      err => {this.openDialog(err)}
     );
   }
-
+  openDialog(message: string) {
+    this.dialog.open(PopupComponent, {
+      data: message
+    });
+  }
 
 }

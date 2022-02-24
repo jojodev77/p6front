@@ -1,6 +1,6 @@
 <div>
   <div class="addCash">
-    <p>Add money with your phone number</p>
+    <p class="ti">Add money with your phone number</p>
     <form [formGroup]="soldAccountForm">
 
       <label for="phoneNumber">you Phone number </label>
@@ -10,8 +10,11 @@
       <input id="amountCash" type="number" formControlName="amountCash">
 
     </form>
-    <button (click)="addCash()">add cash</button>
   </div>
+  <div class="bc">
+    <button (click)="addCash()" class="btn btn-primary">add cash</button>
+  </div>
+  
   <mat-tab-group mat-align-tabs="center">
     <mat-tab label=" My-Account">
       <section id="account">
@@ -23,8 +26,8 @@
           <div class="response">{{user?.userAccountInformations?.accountReferenceTransaction}}</div>
         </div>
 
-        <form [formGroup]="transactionForm">
-          <h3>Make a transaction</h3>
+        <form [formGroup]="transactionForm" class="ft">
+          <h3 class="ti">Make a transaction</h3>
           <div class="transaction">
             <div *ngIf="dataSource !== null">
               <ng-container>
@@ -42,14 +45,21 @@
 
                 <p>select an account</p>
                 <mat-form-field class="example-form-field" appearance="fill">
+                  <mat-label>this account</mat-label>
                   <input matInput type="number" formControlName="amount">
+                  <button *ngIf="value" matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
+                    <mat-icon>close</mat-icon>
+                  </button>
                 </mat-form-field>
-                <button (click)="actionTransaction()" class="btn btn-primary btn-block">Pay</button>
+              
               </ng-container>
             </div>
             <div *ngIf="dataSource === null">You are no buddy !</div>
           </div>
         </form>
+        <div class="fpb">
+          <button (click)="actionTransaction()" class="btn btn-primary btn-block">Pay</button>
+        </div>
       </section>
 
 

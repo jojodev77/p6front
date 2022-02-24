@@ -6,6 +6,8 @@ import { ActivatedRoute } from '@angular/router';
 import { AppConstants } from '../common/app.constants';
 import { Us } from '../app.component';
 import { User } from '../home/home.component';
+import { MatDialog } from '@angular/material/dialog';
+import { PopupComponent } from '../popup/popup.component';
 
 
 @Component({
@@ -27,7 +29,8 @@ export class LoginComponent implements OnInit {
   displayName: string;
   user: User;
 
-  constructor(private authService: AuthService, private tokenStorage: TokenStorageService, private route: ActivatedRoute, private userService: UserService) { }
+  constructor(private authService: AuthService, private tokenStorage: TokenStorageService, private route: ActivatedRoute,
+     private userService: UserService, public dialog: MatDialog) { }
 
   ngOnInit(): void {
 
@@ -70,10 +73,12 @@ export class LoginComponent implements OnInit {
         this.login(data),
           this.tokenStorage.saveToken(data.jwt),
           this.displayName = data.displayName,
-          this.user = data
+          this.user = data,
+          this.openDialog( "login with success");
       },
       err => {
         this.errorMessage = err.error.message;
+        this.openDialog( this.errorMessage);
         this.isLoginFailed = true;
       }
     );
@@ -107,5 +112,11 @@ export class LoginComponent implements OnInit {
       }, {});
     }
     return Object.keys(toBeReturned).length ? toBeReturned : null;
+  }
+
+  openDialog(message: string) {
+    this.dialog.open(PopupComponent, {
+      data: message
+    });
   }
 }
