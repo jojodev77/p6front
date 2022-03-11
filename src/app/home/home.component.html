@@ -3,10 +3,10 @@
     <p class="ti">Add money with your phone number</p>
     <form [formGroup]="soldAccountForm">
 
-      <label for="phoneNumber">you Phone number </label>
+      <label for="phoneNumber">You Phone number: </label>
       <input id="phoneNumber" type="number" formControlName="phoneNumber">
 
-      <label for="amountCash">you want to add </label>
+      <label for="amountCash">You want to add: </label>
       <input id="amountCash" type="number" formControlName="amountCash">
 
     </form>
@@ -20,41 +20,41 @@
       <section id="account">
         <h2>Hello {{user?.displayName}}</h2>
         <div class="infos">
-          <p>your balance is: </p>
+          <p>Your balance is: </p>
           <div class="response">{{accountSituation?.soldAccount}}€</div>
-          <p>your reference number: </p>
+          <p>Your reference number: </p>
           <div class="response">{{user?.userAccountInformations?.accountReferenceTransaction}}</div>
         </div>
 
         <form [formGroup]="transactionForm" class="ft">
           <h3 class="ti">Make a transaction</h3>
           <div class="transaction">
-            <div *ngIf="dataSource !== null">
+            <div *ngIf="dataSource">
               <ng-container>
                 <p>Select a buddy</p>
                 <mat-form-field appearance="fill">
                   <mat-label>Your buddy</mat-label>
                   <mat-select required formControlName="buddy">
-                    <mat-option *ngFor="let u of dataSource" [value]="u.userRefTransaction">
-                      {{u.displayName}} / {{u.userRefTransaction}}
+                    <mat-option *ngFor="let u of listUserRferenceTransaction" [value]="u?.userRefTransaction">
+                      {{u?.displayName }} / {{u?.userRefTransaction}}
                     </mat-option>
                   </mat-select>
                 </mat-form-field>
 
 
-
+                
                 <p>select an account</p>
                 <mat-form-field class="example-form-field" appearance="fill">
                   <mat-label>this account</mat-label>
                   <input matInput type="number" formControlName="amount">
-                  <button *ngIf="value" matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
+                  <button  matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
                     <mat-icon>close</mat-icon>
                   </button>
                 </mat-form-field>
               
               </ng-container>
             </div>
-            <div *ngIf="dataSource === null">You are no buddy !</div>
+            <!-- <div *ngIf="dataSource === null">You are no buddy !</div> -->
           </div>
         </form>
         <div class="fpb">
@@ -73,7 +73,7 @@
           <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
         </mat-form-field>
 
-        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" >
 
           <!-- Position Column -->
           <ng-container matColumnDef="displayName">
@@ -88,13 +88,9 @@
           </ng-container>
 
           <!-- Name Column -->
-          <ng-container matColumnDef="transaction">
-            <th mat-header-cell *matHeaderCellDef> Amount transaction </th>
-            <td mat-cell *matCellDef="let element">
-              <div>
-
-              </div>
-            </td>
+          <ng-container matColumnDef="delete">
+            <th mat-header-cell *matHeaderCellDef> Delete buddy </th>
+            <td mat-cell *matCellDef="let element"> <mat-icon (click)="deleteBuddy(element?.userRefTransaction)">delete_sweep</mat-icon></td>
           </ng-container>
 
 
@@ -140,6 +136,12 @@
           <td mat-cell *matCellDef="let element"> {{element?.displayName}} </td>
         </ng-container>
 
+        <!-- Position Column -->
+        <ng-container matColumnDef="accountReferenceTransaction">
+          <th mat-header-cell *matHeaderCellDef> Reference number </th>
+          <td mat-cell *matCellDef="let element"> {{element?.accountReferenceTransaction}} </td>
+        </ng-container>
+
         <!-- Name Column -->
         <ng-container matColumnDef="date">
           <th mat-header-cell *matHeaderCellDef> Date </th>
@@ -149,7 +151,7 @@
         <!-- Name Column -->
         <ng-container matColumnDef="soldAccount">
           <th mat-header-cell *matHeaderCellDef> Sold account </th>
-          <td mat-cell *matCellDef="let element"> {{element?.soldAccount}} </td>
+          <td mat-cell *matCellDef="let element"> {{element?.soldAccount}}€ </td>
         </ng-container>
 
 

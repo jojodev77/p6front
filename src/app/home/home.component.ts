@@ -1,3 +1,4 @@
+import { Message } from '@angular/compiler/src/i18n/i18n_ast';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -48,6 +49,10 @@ export interface UserAccountInformations {
   soldAccount: number
 }
 
+export interface Info {
+  message: string;
+}
+
 
 
 @Component({
@@ -63,8 +68,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   constructor(private userService: UserService, private token: TokenStorageService,
     private router: Router, public dialog: MatDialog) { }
 
-  displayedColumns: string[] = ['displayName', 'accountReferenceTransaction', 'transaction'];
-  displayedColumnsHistory: string[] = ['displayName', 'date', 'soldAccount'];
+  displayedColumns: string[] = ['displayName', 'accountReferenceTransaction', 'delete'];
+  displayedColumnsHistory: string[] = ['displayName', 'accountReferenceTransaction', 'date', 'soldAccount'];
   dataSource = new MatTableDataSource();
   dataSourceHistory = new MatTableDataSource();
   myControl = new FormControl();
@@ -77,6 +82,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   valueListUserReferenceAccount: ListUserRferenceTransaction;
   form: any = {};
   value = 'Clear me';
+  message: Info;
   soldAccountForm = new FormGroup({
     amountCash: new FormControl(''),
     phoneNumber: new FormControl(''),
@@ -90,6 +96,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   listHistory: any;
   accountSituation: any;
   accountRef: string;
+  listUserRferenceTransaction: ListUserRferenceTransaction[];
 
   ngOnInit(): void {
     this.refreshData();
@@ -129,6 +136,13 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.refreshData();
   }
 
+  deleteBuddy(bussyGetter: string) {
+    this.userService.deleteBuddy(this.user.userAccountInformations?.accountReferenceTransaction, bussyGetter).subscribe(
+      (data: any) => { console.log(data) }
+    );
+    this.refreshData();
+  }
+
 
   actionTransaction() {
     let buddy: AddBuddy = {
@@ -136,16 +150,15 @@ export class HomeComponent implements OnInit, OnDestroy {
       userSetter: this.user.userAccountInformations?.accountReferenceTransaction,
       amount: this.transactionForm.get('amount').value
     };
-    // buddy.userGetter = this.buddyControl.value;
-    // buddy.userSetter = this.user.userAccountInformations?.accountReferenceTransaction;
-    let amount = this.transactionForm.get('amount').value;
     this.userService.startTransaction(buddy).subscribe(
-      data => { console.log(data),this.openDialog("transaction completed successfully") },
-      err => {this.openDialog(err)}
+      data => {  },
+      err => { this.openDialog(err) }
     );
-    this.userService.getAccountSituation(buddy).subscribe(
-      (data: any) => { this.accountSituation = data }
-    );
+    if (buddy) {
+      this.userService.getAccountSituation(buddy).subscribe(
+        (data: any) => { this.accountSituation = data }
+      );
+    }
   }
 
   private refreshData() {
@@ -158,27 +171,20 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.content = JSON.parse(err.error).message;
       }
     );
-    this.user =  this.token.getUser();
+    this.user = this.token.getUser();
     if (this.token.getUser()) {
       if (this.user?.displayName) {
-        this.user =  this.token.getUser();
-        console.log(this.user)
+        this.user = this.token.getUser();
       } else {
-        this.user =  JSON.parse(this.token.getUser());
-        console.log(this.user)
+        this.user = JSON.parse(this.token.getUser());
       }
-    
-      }
-      
-    console.log(this.user)
-        
-        
-      
- 
+
+    }
+
     this.valueListUserReferenceAccount = this.myControl.value;
     this.userService.getListUserReferenceTransaction().subscribe(
       (data: any[]) => {
-        this.listUserReferenceAccount = data,
+        this.listUserReferenceAccount = data.filter(data => data.displayName !== this.user.displayName),
           data.filter(data => data.displayName === this.user.displayName)
       }
     );
@@ -188,7 +194,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     this.userService.getListBuddy(this.user.id).subscribe(
       (data: any) => {
-        this.dataSource = data
+        this.dataSource = data, this.listUserRferenceTransaction = data
 
       }
     );
@@ -228,12 +234,12 @@ export class HomeComponent implements OnInit, OnDestroy {
       userGetter: this.user.userAccountInformations?.accountReferenceTransaction
     }
     this.userService.addCash(cash).subscribe(
-      (data: any) => { console.log(data), this.openDialog("money add successfully") },
-      err => {this.openDialog(err)}
+      (data: any) => { console.log(data) },
+      err => { this.openDialog(err) }
     );
     this.userService.getAccountSituation(this.buddy).subscribe(
-      data => {this.accountSituation = data},
-      err => {this.openDialog(err)}
+      data => { this.accountSituation = data },
+      err => { this.openDialog(err) }
     );
   }
   openDialog(message: string) {

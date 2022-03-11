@@ -55,6 +55,16 @@ export class UserService {
     return this.http.post(AppConstants.ADD_BUDDY,buddy, httpOptions);
   }
 
+  deleteBuddy(userGetter: string, userSetter: string): Observable<any> {
+    
+    let buddy: AddBuddy = {
+      userGetter: userGetter,
+      userSetter: userSetter,
+      amount: null
+    }
+    return this.http.post(AppConstants.DELETE_BUDDY,buddy, httpOptions);
+  }
+
   getListBuddy(id: number) {
     return this.http.post(AppConstants.GET_LIST_BUDDY,id, httpOptions);
   }

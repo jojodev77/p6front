@@ -5,6 +5,7 @@ export class AppConstants {
     public static API_URL = AppConstants.API_BASE_URL + "api/";
     public static LIST_REFERENCE_TRANSACTION = AppConstants.API_BASE_URL + "api/user/listUserReferenceTransaction";
     public static ADD_BUDDY = AppConstants.API_BASE_URL + "api/user/addBuddy";
+    public static DELETE_BUDDY = AppConstants.API_BASE_URL + "api/user/deleteBuddy";
     public static ADD_CASH = AppConstants.API_BASE_URL + "api/user/addCash";
     public static GET_LIST_HISTORY = AppConstants.API_BASE_URL + "api/user/history";
     public static GET_ACCOUNT_SITUATION = AppConstants.API_BASE_URL + "api/user/accountSituation";
