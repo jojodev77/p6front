@@ -104,7 +104,7 @@
         </table>
         <br />
 
-        <h3>Add a buddy:</h3>
+        <h3>Add a buddy in this list:</h3>
         <input type="text" matInput [formControl]="myControl" [matAutocomplete]="auto" placeholder="add a buddy">
         <mat-autocomplete class="autoc" #auto="matAutocomplete" [displayWith]="displayFn">
           <mat-option class="matOptions" *ngFor="let option of listUserReferenceAccount" [value]="option"
@@ -112,9 +112,7 @@
             {{option.displayName}} : {{option.accountReferenceTransaction}}
           </mat-option>
         </mat-autocomplete>
-        <h4>Confirm you add Buddy?:</h4>
-        <p>{{valueListUserReferenceAccount?.displayName}}</p>
-        <button (click)="addBuddy(valueListUserReferenceAccount)" class="btn btn-primary btn-sm">Confirm</button>
+        <button (click)="addBuddy(valueListUserReferenceAccount)" class="btn btn-primary btn-sm">Add {{valueListUserReferenceAccount?.displayName}}</button>
         <br /><br />
 
 

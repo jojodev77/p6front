@@ -108,7 +108,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.userService.getListUserReferenceTransaction().subscribe().unsubscribe();
-    this.userService.getPublicContent().subscribe().unsubscribe();
+  //  this.userService.getPublicContent().subscribe().unsubscribe();
   }
 
   getValue() {
@@ -134,13 +134,14 @@ export class HomeComponent implements OnInit, OnDestroy {
       (data: any) => { console.log(data) }
     );
     this.refreshData();
+    this.refresh();
   }
 
   deleteBuddy(bussyGetter: string) {
     this.userService.deleteBuddy(this.user.userAccountInformations?.accountReferenceTransaction, bussyGetter).subscribe(
       (data: any) => { console.log(data) }
     );
-    this.refreshData();
+    this.refresh();
   }
 
 
@@ -152,25 +153,26 @@ export class HomeComponent implements OnInit, OnDestroy {
     };
     this.userService.startTransaction(buddy).subscribe(
       data => {  },
-      err => { this.openDialog(err) }
+      err => {  }
     );
-    if (buddy) {
-      this.userService.getAccountSituation(buddy).subscribe(
-        (data: any) => { this.accountSituation = data }
-      );
-    }
+    // if (buddy) {
+    //   this.userService.getAccountSituation(buddy).subscribe(
+    //     (data: any) => { this.accountSituation = data }
+    //   );
+    // }
+    this.refresh();
   }
 
   private refreshData() {
     this.token.getUser()
-    this.userService.getPublicContent().subscribe(
-      data => {
-        this.content = data;
-      },
-      err => {
-        this.content = JSON.parse(err.error).message;
-      }
-    );
+    // this.userService.getPublicContent().subscribe(
+    //   data => {
+    //     this.content = data;
+    //   },
+    //   err => {
+    //     this.content = JSON.parse(err.error).message;
+    //   }
+    // );
     this.user = this.token.getUser();
     if (this.token.getUser()) {
       if (this.user?.displayName) {
@@ -223,24 +225,28 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   refreshPage() {
     this.userService.getListUserReferenceTransaction().subscribe().unsubscribe();
-    this.userService.getPublicContent().subscribe().unsubscribe();
+    //this.userService.getPublicContent().subscribe().unsubscribe();
     this.router.navigate([""]);
   }
-
+  refresh(): void {
+    window.location.reload();
+  }
   addCash() {
     let cash: AddCash = {
       amount: this.soldAccountForm.get('amountCash').value,
       phoneNumber: this.soldAccountForm.get('phoneNumber').value,
       userGetter: this.user.userAccountInformations?.accountReferenceTransaction
     }
+    
     this.userService.addCash(cash).subscribe(
-      (data: any) => { console.log(data) },
-      err => { this.openDialog(err) }
+      (data: any) => {   },
+      err => { }
     );
-    this.userService.getAccountSituation(this.buddy).subscribe(
-      data => { this.accountSituation = data },
-      err => { this.openDialog(err) }
-    );
+    // this.userService.getAccountSituation(this.buddy).subscribe(
+    //   data => { this.accountSituation = data },
+    //   err => {  }
+    // );
+    this.refresh();
   }
   openDialog(message: string) {
     this.dialog.open(PopupComponent, {

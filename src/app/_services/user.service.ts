@@ -17,9 +17,9 @@ export class UserService {
 
   constructor(private http: HttpClient) { }
 
-  getPublicContent(): Observable<any> {
-    return this.http.get(AppConstants.API_URL + 'all', { responseType: 'text' });
-  }
+  // getPublicContent(): Observable<any> {
+  //   return this.http.get(AppConstants.API_URL + 'all', { responseType: 'text' });
+  // }
 
   getUserBoard(): Observable<any> {
     return this.http.get(AppConstants.API_URL + 'user', { responseType: 'text' });
@@ -62,7 +62,10 @@ export class UserService {
       userSetter: userSetter,
       amount: null
     }
-    return this.http.post(AppConstants.DELETE_BUDDY,buddy, httpOptions);
+    return this.http.post(AppConstants.DELETE_BUDDY,buddy, httpOptions).pipe(
+      map(res => <any[]>res),
+      catchError(this.handleError)
+    );
   }
 
   getListBuddy(id: number) {
