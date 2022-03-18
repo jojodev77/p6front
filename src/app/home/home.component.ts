@@ -11,19 +11,13 @@ import { PopupComponent } from '../popup/popup.component';
 import { TokenStorageService } from '../_services/token-storage.service';
 import { UserService } from '../_services/user.service';
 
-export interface PeriodicElement {
-  name: string;
-  position: number;
-  weight: number;
-  symbol: string;
-}
 
 export interface ListUserRferenceTransaction {
   accountReferenceTransaction: string;
   displayName: string;
 }
 
-export interface AddBuddy {
+export interface Buddy {
   userGetter: string;
   userSetter: string;
   amount: number;
@@ -69,7 +63,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     private router: Router, public dialog: MatDialog) { }
 
   displayedColumns: string[] = ['displayName', 'accountReferenceTransaction', 'delete'];
-  displayedColumnsHistory: string[] = ['displayName', 'accountReferenceTransaction', 'date', 'soldAccount'];
+  displayedColumnsHistory: string[] = ['displayName', 'accountReferenceTransaction', 'date', 'soldAccount', 'fee'];
   dataSource = new MatTableDataSource();
   dataSourceHistory = new MatTableDataSource();
   myControl = new FormControl();
@@ -108,7 +102,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.userService.getListUserReferenceTransaction().subscribe().unsubscribe();
-  //  this.userService.getPublicContent().subscribe().unsubscribe();
+    //  this.userService.getPublicContent().subscribe().unsubscribe();
   }
 
   getValue() {
@@ -146,33 +140,20 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
   actionTransaction() {
-    let buddy: AddBuddy = {
+    let buddy: Buddy = {
       userGetter: this.transactionForm.get('buddy').value,
       userSetter: this.user.userAccountInformations?.accountReferenceTransaction,
       amount: this.transactionForm.get('amount').value
     };
     this.userService.startTransaction(buddy).subscribe(
-      data => {  },
-      err => {  }
+      data => { },
+      err => { }
     );
-    // if (buddy) {
-    //   this.userService.getAccountSituation(buddy).subscribe(
-    //     (data: any) => { this.accountSituation = data }
-    //   );
-    // }
     this.refresh();
   }
 
   private refreshData() {
     this.token.getUser()
-    // this.userService.getPublicContent().subscribe(
-    //   data => {
-    //     this.content = data;
-    //   },
-    //   err => {
-    //     this.content = JSON.parse(err.error).message;
-    //   }
-    // );
     this.user = this.token.getUser();
     if (this.token.getUser()) {
       if (this.user?.displayName) {
@@ -181,7 +162,17 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.user = JSON.parse(this.token.getUser());
       }
 
+    } else {
+      this.router.navigate(["/login"])
     }
+
+
+    this.userService.getListBuddy(this.user.id).subscribe(
+      (data: any) => {
+        this.dataSource = data, this.listUserRferenceTransaction = data
+
+      }
+    );
 
     this.valueListUserReferenceAccount = this.myControl.value;
     this.userService.getListUserReferenceTransaction().subscribe(
@@ -192,16 +183,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     );
 
 
-
-
-    this.userService.getListBuddy(this.user.id).subscribe(
-      (data: any) => {
-        this.dataSource = data, this.listUserRferenceTransaction = data
-
-      }
-    );
-
-    let bud: AddBuddy = {
+    let bud: Buddy = {
       userGetter: null,
       userSetter: this.user?.userAccountInformations?.accountReferenceTransaction,
       amount: null
@@ -213,7 +195,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   getListHistory() {
-    let bud: AddBuddy = {
+    let bud: Buddy = {
       userGetter: null,
       userSetter: this.user?.userAccountInformations?.accountReferenceTransaction,
       amount: null
@@ -237,9 +219,9 @@ export class HomeComponent implements OnInit, OnDestroy {
       phoneNumber: this.soldAccountForm.get('phoneNumber').value,
       userGetter: this.user.userAccountInformations?.accountReferenceTransaction
     }
-    
+
     this.userService.addCash(cash).subscribe(
-      (data: any) => {   },
+      (data: any) => { },
       err => { }
     );
     // this.userService.getAccountSituation(this.buddy).subscribe(

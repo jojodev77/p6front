@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../_services/auth.service';
 import { UserService } from '../_services/user.service';
 import { TokenStorageService } from '../_services/token-storage.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AppConstants } from '../common/app.constants';
 import { Us } from '../app.component';
 import { User } from '../home/home.component';
@@ -30,20 +30,22 @@ export class LoginComponent implements OnInit {
   user: User;
 
   constructor(private authService: AuthService, private tokenStorage: TokenStorageService, private route: ActivatedRoute,
-     private userService: UserService, public dialog: MatDialog) { }
+     private userService: UserService, public dialog: MatDialog,
+     private router: Router) { }
 
   ngOnInit(): void {
 
     const token: string = this.route.snapshot.queryParamMap.get('token');
     const error: string = this.route.snapshot.queryParamMap.get('error');
-    console.log(token)
     if (this.tokenStorage.getToken()) {
       this.isLoggedIn = true;
       if (this.tokenStorage.getUser()) {
         if (this.user) {
           this.user =  this.tokenStorage.getUser();
+          this.router.navigate(["/home"]);
         } else {
           this.user =  JSON.parse(this.tokenStorage.getUser());
+          this.router.navigate(["/home"]);
         }
       }
       
@@ -75,6 +77,7 @@ export class LoginComponent implements OnInit {
           this.displayName = data.displayName,
           this.user = data,
           this.openDialog( "login with success");
+          this.router.navigate([""]);
       },
       err => {
         this.errorMessage = err.error.message;

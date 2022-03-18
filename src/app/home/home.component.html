@@ -14,7 +14,7 @@
   <div class="bc">
     <button (click)="addCash()" class="btn btn-primary">add cash</button>
   </div>
-  
+
   <mat-tab-group mat-align-tabs="center">
     <mat-tab label=" My-Account">
       <section id="account">
@@ -42,24 +42,27 @@
                 </mat-form-field>
 
 
-                
+
                 <p>select an account</p>
                 <mat-form-field class="example-form-field" appearance="fill">
                   <mat-label>this account</mat-label>
                   <input matInput type="number" formControlName="amount">
-                  <button  matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
+                  <button matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
                     <mat-icon>close</mat-icon>
                   </button>
                 </mat-form-field>
-              
+
               </ng-container>
             </div>
-            <!-- <div *ngIf="dataSource === null">You are no buddy !</div> -->
           </div>
         </form>
-        <div class="fpb">
+        <div class="fpb" *ngIf="accountSituation?.soldAccount > transactionForm.get('amount').value">
           <button (click)="actionTransaction()" class="btn btn-primary btn-block">Pay</button>
         </div>
+        <div class="fpb" *ngIf="accountSituation?.soldAccount < transactionForm.get('amount').value">
+          <p>You dont have money necessary</p>>
+        </div>
+
       </section>
 
 
@@ -73,7 +76,7 @@
           <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
         </mat-form-field>
 
-        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" >
+        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
           <!-- Position Column -->
           <ng-container matColumnDef="displayName">
@@ -90,7 +93,9 @@
           <!-- Name Column -->
           <ng-container matColumnDef="delete">
             <th mat-header-cell *matHeaderCellDef> Delete buddy </th>
-            <td mat-cell *matCellDef="let element"> <mat-icon (click)="deleteBuddy(element?.userRefTransaction)">delete_sweep</mat-icon></td>
+            <td mat-cell *matCellDef="let element">
+              <mat-icon (click)="deleteBuddy(element?.userRefTransaction)">delete_sweep</mat-icon>
+            </td>
           </ng-container>
 
 
@@ -99,7 +104,7 @@
 
           <!-- Row shown when there is no matching data. -->
           <tr class="mat-row" *matNoDataRow>
-            <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+            <td class="mat-cell" colspan="4">Not buddy saved"{{input.value}}"</td>
           </tr>
         </table>
         <br />
@@ -112,12 +117,13 @@
             {{option.displayName}} : {{option.accountReferenceTransaction}}
           </mat-option>
         </mat-autocomplete>
-        <button (click)="addBuddy(valueListUserReferenceAccount)" class="btn btn-primary btn-sm">Add {{valueListUserReferenceAccount?.displayName}}</button>
+        <button (click)="addBuddy(valueListUserReferenceAccount)" class="btn btn-primary btn-sm">Add
+          {{valueListUserReferenceAccount?.displayName}}</button>
         <br /><br />
 
 
 
-       
+
       </section>
     </mat-tab>
 
@@ -143,7 +149,7 @@
         <!-- Name Column -->
         <ng-container matColumnDef="date">
           <th mat-header-cell *matHeaderCellDef> Date </th>
-          <td mat-cell *matCellDef="let element"> {{element?.date}} </td>
+          <td mat-cell *matCellDef="let element"> {{element?.date | date}} </td>
         </ng-container>
 
         <!-- Name Column -->
@@ -152,13 +158,19 @@
           <td mat-cell *matCellDef="let element"> {{element?.soldAccount}}€ </td>
         </ng-container>
 
+        <!-- Name Column -->
+        <ng-container matColumnDef="fee">
+          <th mat-header-cell *matHeaderCellDef> Your fee </th>
+          <td mat-cell *matCellDef="let element"> {{element?.fee}}€ </td>
+        </ng-container>
+
 
         <tr mat-header-row *matHeaderRowDef="displayedColumnsHistory"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumnsHistory;"></tr>
 
         <!-- Row shown when there is no matching data. -->
         <tr class="mat-row" *matNoDataRow>
-          <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+          <td class="mat-cell" colspan="4">Not transaction carry out"{{input.value}}"</td>
         </tr>
       </table>
     </mat-tab>

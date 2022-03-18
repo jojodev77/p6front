@@ -6,12 +6,14 @@ import { catchError, map } from 'rxjs/operators';
 
 const httpOptions = {
   headers: new HttpHeaders(
-    {  'Access-Control-Allow-Origin': '**',
-    'Access-Control-Allow-Headers': '**',
-    'Access-Control-Allow-Methods': 'POST, GET, OPTION, DELETE, PUT',
-    'Content-Type': 'application/json' }
-    
-    )
+    {
+      'Access-Control-Allow-Origin': '**',
+      'Access-Control-Allow-Headers': '**',
+      'Access-Control-Allow-Methods': 'POST, GET, OPTION, DELETE, PUT',
+      'Content-Type': 'application/json'
+    }
+
+  )
 };
 
 @Injectable({
@@ -46,32 +48,32 @@ export class AuthService {
   handleError(error) {
     let errorMessage = '';
     if (error.error instanceof ErrorEvent) {
-        // client-side error
-        errorMessage = `Error: ${error.error.message}`;
-        return throwError( alert(errorMessage))
+      // client-side error
+      errorMessage = `Error: ${error.error.message}`;
+      return throwError(alert(errorMessage))
     } else {
-       switch (error.status) {
-         case 401:
+      switch (error.status) {
+        case 401:
           errorMessage = `Erreur: ${error.status}\nMessage: incorrect authentication`;
-          return throwError( alert(errorMessage))
-           break;
-             case 500:
-            errorMessage = `Erreur: ${error.status}\nMessage: system error.`;
-            return throwError( alert(errorMessage))
-             break;
-             case 400:
-            errorMessage = `Erreur: ${error.status}\nMessage: request to server failed`;
-            return throwError(  alert(errorMessage))
-             break;
-             case 200:
-              errorMessage = `successful operation`;
-              return throwError(  alert(errorMessage))
-               break;
-       
-         default:
-           break;
-       }
-  
+          return throwError(alert(errorMessage))
+          break;
+        case 500:
+          errorMessage = `Erreur: ${error.status}\nMessage: system error.`;
+          return throwError(alert(errorMessage))
+          break;
+        case 400:
+          errorMessage = `Erreur: ${error.status}\nMessage: request to server failed`;
+          return throwError(alert(errorMessage))
+          break;
+        case 200:
+          errorMessage = `successful operation`;
+          return throwError(alert(errorMessage))
+          break;
+
+        default:
+          break;
       }
+
     }
+  }
 }
